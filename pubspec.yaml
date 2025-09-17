@@ -1,7 +1,17 @@
 name: github_sign_in
-description: Sign In With GitHub
-version: 0.0.6
+description: A comprehensive Flutter package for GitHub OAuth authentication with user data fetching. Supports both mobile and web platforms with a clean, easy-to-use API.
+version: 1.0.0
 homepage: https://github.com/jayfinava-benzatine/GITHUB_SIGN_IN
+repository: https://github.com/jayfinava-benzatine/GITHUB_SIGN_IN
+issue_tracker: https://github.com/jayfinava-benzatine/GITHUB_SIGN_IN/issues
+documentation: https://github.com/jayfinava-benzatine/GITHUB_SIGN_IN#readme
+
+topics:
+  - github
+  - oauth
+  - authentication
+  - signin
+  - flutter
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -11,5 +21,12 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.5.0
-  webview_flutter: ^4.13.0
   url_launcher: ^6.3.2
+  webview_flutter: ^4.13.0
+
+dev_dependencies:
+  flutter_lints: ^3.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:

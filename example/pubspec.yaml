@@ -1,5 +1,5 @@
-name: example
-description: A new Flutter project.
+name: github_sign_in_example
+description: Example app demonstrating GitHub OAuth authentication with user data fetching.
 
 publish_to: none
 
