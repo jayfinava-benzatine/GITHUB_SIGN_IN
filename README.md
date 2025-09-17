@@ -26,7 +26,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  github_sign_in: ^1.0.0
+  github_oauth_signin: ^1.0.0
 ```
 
 Then run:
@@ -89,8 +89,8 @@ Add the following to your `android/app/src/main/AndroidManifest.xml`:
 ### Basic Implementation
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:github_sign_in/github_sign_in.dart';
+import 'package:flutter/material.dart'
+import 'package:github_oauth_signin/github_sign_in.dart';
 
 class MyApp extends StatelessWidget {
   @override

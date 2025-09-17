@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:github_sign_in/github_sign_in.dart';
+import 'package:github_oauth_signin/github_sign_in.dart';
 
 void main() {
   runApp(const MyApp());

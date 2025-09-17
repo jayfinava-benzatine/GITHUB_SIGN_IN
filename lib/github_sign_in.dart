@@ -35,7 +35,7 @@
 /// - [GitHubSignIn]: The main authentication service
 /// - [GitHubSignInResult]: Contains the authentication result
 /// - [GitHubSignInResultStatus]: Enum for result status
-library github_sign_in;
+library github_oauth_signin;
 
 export 'src/github_sign_in.dart';
 export 'src/github_sign_in_result.dart';

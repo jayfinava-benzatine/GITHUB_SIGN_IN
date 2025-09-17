@@ -1,4 +1,4 @@
-name: github_sign_in
+name: github_oauth_signin
 description: A comprehensive Flutter package for GitHub OAuth authentication with user data fetching. Supports both mobile and web platforms with a clean, easy-to-use API.
 version: 1.0.0
 homepage: https://github.com/jayfinava-benzatine/GITHUB_SIGN_IN
