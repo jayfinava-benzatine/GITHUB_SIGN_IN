@@ -1,6 +1,5 @@
 # GitHub Sign In
 
-[![pub package](https://img.shields.io/pub/v/github_sign_in.svg)](https://pub.dev/packages/github_sign_in)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A comprehensive Flutter package for GitHub OAuth authentication with automatic user data fetching. Supports both mobile and web platforms with a clean, easy-to-use API.
