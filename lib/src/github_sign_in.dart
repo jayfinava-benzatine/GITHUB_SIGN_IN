@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:url_launcher/url_launcher.dart';
@@ -38,13 +37,13 @@ class GitHubSignIn {
     this.userAgent,
   });
 
-  Future<GitHubSignInResult> signIn(BuildContext context) async {
+  Future<GitHubSignInResult> signIn(BuildContext context, {AppBar? appBar}) async {
     // let's authorize
     var authorizedResult;
 
     if (kIsWeb) {
-      authorizedResult = await launch(
-        _generateAuthorizedUrl(),
+      authorizedResult = await launchUrl(
+        Uri.parse(_generateAuthorizedUrl()),
         webOnlyWindowName: '_self',
       );
       //push data into authorized result somehow
@@ -59,6 +58,7 @@ class GitHubSignIn {
             clearCache: clearCache,
             title: title,
             centerTitle: centerTitle,
+            appBar: appBar,
           ),
         ),
       );

@@ -8,6 +8,7 @@ class GitHubSignInPage extends StatefulWidget {
   final String title;
   final bool? centerTitle;
   final String? userAgent;
+  final AppBar? appBar;
 
   const GitHubSignInPage(
       {Key? key,
@@ -16,7 +17,8 @@ class GitHubSignInPage extends StatefulWidget {
       this.userAgent,
       this.clearCache = true,
       this.title = "",
-      this.centerTitle})
+      this.centerTitle,
+      this.appBar})
       : super(key: key);
 
   @override
@@ -26,31 +28,20 @@ class GitHubSignInPage extends StatefulWidget {
 class _GitHubSignInPageState extends State<GitHubSignInPage> {
   static const String _userAgentMacOSX =
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36";
+  
+  late final WebViewController _controller;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: new AppBar(
-          title: Text(widget.title),
-          centerTitle: widget.centerTitle,
-        ),
-        body: WebView(
-          initialUrl: widget.url,
-          userAgent: widget.userAgent ?? _userAgentMacOSX,
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController controller) {
-            if (widget.clearCache) {
-              controller.clearCache();
-              CookieManager manager = CookieManager();
-              manager.clearCookies();
-            }
-          },
-          onPageFinished: (url) {
+    
+    // Initialize the WebViewController
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setUserAgent(widget.userAgent ?? _userAgentMacOSX)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (String url) {
             if (url.contains("error=")) {
               Navigator.of(context).pop(
                 Exception(Uri.parse(url).queryParameters["error"]),
@@ -60,13 +51,29 @@ class _GitHubSignInPageState extends State<GitHubSignInPage> {
                   url.replaceFirst("${widget.redirectUrl}?code=", "").trim());
             }
           },
-        ));
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.url));
+
+    // Clear cache if requested
+    if (widget.clearCache) {
+      _controller.clearCache();
+      WebViewCookieManager().clearCookies();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: widget.appBar ?? AppBar(
+          title: Text(widget.title),
+          centerTitle: widget.centerTitle,
+        ),
+        body: WebViewWidget(controller: _controller));
   }
 
   @override
   void dispose() {
     super.dispose();
-    // _wv.dispose();
-    // _wv.close();
   }
 }

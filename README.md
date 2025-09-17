@@ -1,12 +1,17 @@
 # dart-github-sign-in
 Sign In With GitHub
 
+## Requirements
+
+- Flutter 3.0.0+
+- Dart 3.0.0+
+
 ## Getting Started
 
 Add package dependency
 
 ```yaml
-github_sign_in: ^0.0.1
+github_sign_in: ^0.0.6
 ```
 
 Perform `Sign In With GitHub`
