@@ -2,11 +2,13 @@ class GitHubSignInResult {
   final String? token;
   final GitHubSignInResultStatus status;
   final String errorMessage;
+  final Map<String, dynamic>? userData;
 
   GitHubSignInResult(
     this.status, {
     this.token,
     this.errorMessage = "",
+    this.userData,
   });
 }
 

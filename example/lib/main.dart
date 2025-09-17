@@ -43,14 +43,100 @@ class _MyHomePageState extends State<MyHomePage> {
     var result = await gitHubSignIn.signIn(context);
     switch (result.status) {
       case GitHubSignInResultStatus.ok:
-        print(result.token);
+        print('✅ GitHub Sign In Successful!');
+        print('🔑 Access Token: ${result.token}');
+        
+        if (result.userData != null) {
+          print('👤 User Data:');
+          print('   - Name: ${result.userData!['name']}');
+          print('   - Email: ${result.userData!['email']}');
+          print('   - Username: ${result.userData!['login']}');
+          print('   - Avatar: ${result.userData!['avatar_url']}');
+          print('   - Bio: ${result.userData!['bio']}');
+          print('   - Public Repos: ${result.userData!['public_repos']}');
+          print('   - Followers: ${result.userData!['followers']}');
+          print('   - Following: ${result.userData!['following']}');
+          
+          // Show success dialog with user info
+          _showUserInfoDialog(context, result.userData!);
+        } else {
+          print('⚠️ User data could not be fetched');
+        }
         break;
 
       case GitHubSignInResultStatus.cancelled:
+        print('❌ GitHub Sign In Cancelled');
+        print(result.errorMessage);
+        break;
+        
       case GitHubSignInResultStatus.failed:
+        print('❌ GitHub Sign In Failed');
         print(result.errorMessage);
         break;
     }
+  }
+
+  void _showUserInfoDialog(BuildContext context, Map<String, dynamic> userData) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('GitHub User Info'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (userData['avatar_url'] != null)
+                  Center(
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundImage: NetworkImage(userData['avatar_url']),
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                _buildInfoRow('Name', userData['name']),
+                _buildInfoRow('Username', userData['login']),
+                _buildInfoRow('Email', userData['email']),
+                _buildInfoRow('Bio', userData['bio']),
+                _buildInfoRow('Public Repos', userData['public_repos']?.toString()),
+                _buildInfoRow('Followers', userData['followers']?.toString()),
+                _buildInfoRow('Following', userData['following']?.toString()),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildInfoRow(String label, String? value) {
+    if (value == null || value.isEmpty) return const SizedBox.shrink();
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 80,
+            child: Text(
+              '$label:',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: Text(value),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

@@ -20,10 +20,8 @@ class GitHubSignIn {
   final bool clearCache;
   final String? userAgent;
 
-  final String _githubAuthorizedUrl =
-      "https://github.com/login/oauth/authorize";
-  final String _githubAccessTokenUrl =
-      "https://github.com/login/oauth/access_token";
+  final String _githubAuthorizedUrl = "https://github.com/login/oauth/authorize";
+  final String _githubAccessTokenUrl = "https://github.com/login/oauth/access_token";
 
   GitHubSignIn({
     required this.clientId,
@@ -47,7 +45,6 @@ class GitHubSignIn {
         webOnlyWindowName: '_self',
       );
       //push data into authorized result somehow
-
     } else {
       authorizedResult = await Navigator.of(context).push(
         MaterialPageRoute(
@@ -81,24 +78,33 @@ class GitHubSignIn {
     var response = await http.post(
       Uri.parse(_githubAccessTokenUrl),
       headers: {"Accept": "application/json"},
-      body: {
-        "client_id": clientId,
-        "client_secret": clientSecret,
-        "code": code
-      },
+      body: {"client_id": clientId, "client_secret": clientSecret, "code": code},
     );
+
     GitHubSignInResult result;
     if (response.statusCode == 200) {
       var body = json.decode(utf8.decode(response.bodyBytes));
-      result = GitHubSignInResult(
-        GitHubSignInResultStatus.ok,
-        token: body["access_token"],
-      );
+      String? accessToken = body["access_token"];
+
+      if (accessToken != null) {
+        // Fetch user data from GitHub API
+        Map<String, dynamic>? userData = await _fetchUserDataFromGitHub(accessToken);
+
+        result = GitHubSignInResult(
+          GitHubSignInResultStatus.ok,
+          token: accessToken,
+          userData: userData,
+        );
+      } else {
+        result = GitHubSignInResult(
+          GitHubSignInResultStatus.failed,
+          errorMessage: "Access token not found in response",
+        );
+      }
     } else {
       result = GitHubSignInResult(
-        GitHubSignInResultStatus.cancelled,
-        errorMessage:
-            "Unable to obtain token. Received: ${response.statusCode}",
+        GitHubSignInResultStatus.failed,
+        errorMessage: "Unable to obtain token. Received: ${response.statusCode}",
       );
     }
 
@@ -106,10 +112,67 @@ class GitHubSignIn {
   }
 
   String _generateAuthorizedUrl() {
-    return "$_githubAuthorizedUrl?" +
-        "client_id=$clientId" +
-        "&redirect_uri=$redirectUrl" +
-        "&scope=$scope" +
-        "&allow_signup=$allowSignUp";
+    return "$_githubAuthorizedUrl?" + "client_id=$clientId" + "&redirect_uri=$redirectUrl" + "&scope=$scope" + "&allow_signup=$allowSignUp";
+  }
+
+  /// Uses the access token to fetch the authenticated user's data from the GitHub API.
+  Future<Map<String, dynamic>?> _fetchUserDataFromGitHub(String accessToken) async {
+    const String userApiUrl = 'https://api.github.com/user';
+    const String emailsApiUrl = 'https://api.github.com/user/emails';
+
+    final Map<String, String> headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Accept': 'application/json',
+    };
+
+    try {
+      // Fetch user data
+      final userResponse = await http.get(
+        Uri.parse(userApiUrl),
+        headers: headers,
+      );
+
+      if (userResponse.statusCode != 200) {
+        print('❌ Failed to fetch user data: ${userResponse.statusCode}');
+        return null;
+      }
+
+      final userData = json.decode(utf8.decode(userResponse.bodyBytes)) as Map<String, dynamic>;
+
+      // Fetch user emails
+      final emailsResponse = await http.get(
+        Uri.parse(emailsApiUrl),
+        headers: headers,
+      );
+
+      if (emailsResponse.statusCode != 200) {
+        print('❌ Failed to fetch user emails: ${emailsResponse.statusCode}');
+        return null;
+      }
+
+      final emailsData = json.decode(utf8.decode(emailsResponse.bodyBytes)) as List<dynamic>;
+
+      // Find primary verified email
+      String? primaryEmail;
+      for (final email in emailsData) {
+        if (email is Map<String, dynamic> && email['primary'] == true && email['verified'] == true) {
+          primaryEmail = email['email'] as String?;
+          break;
+        }
+      }
+
+      if (primaryEmail == null) {
+        print('❌ No primary verified email found');
+        return null;
+      }
+
+      // Add primary email to user data
+      userData['email'] = primaryEmail;
+
+      return userData;
+    } catch (e) {
+      print('❌ HTTP Request failed: $e');
+      return null;
+    }
   }
 }
