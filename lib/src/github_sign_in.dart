@@ -156,7 +156,7 @@ class GitHubSignIn {
     } else {
       authorizedResult = await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => GitHubSignInPage(
+          builder: (BuildContext context) => GitHubSignInPage(
             url: _generateAuthorizedUrl(),
             redirectUrl: redirectUrl,
             userAgent: userAgent,
@@ -185,8 +185,8 @@ class GitHubSignIn {
     String code = authorizedResult;
     var response = await http.post(
       Uri.parse(_githubAccessTokenUrl),
-      headers: {'Accept': 'application/json'},
-      body: {'client_id': clientId, 'client_secret': clientSecret, 'code': code},
+      headers: <String, String>{'Accept': 'application/json'},
+      body: <String, String>{'client_id': clientId, 'client_secret': clientSecret, 'code': code},
     );
 
     GitHubSignInResult result;
@@ -196,7 +196,7 @@ class GitHubSignIn {
 
       if (accessToken != null) {
         // Fetch user data from GitHub API
-        Map<String, dynamic>? userData = await _fetchUserDataFromGitHub(accessToken);
+        var userData = await _fetchUserDataFromGitHub(accessToken);
 
         result = GitHubSignInResult(
           GitHubSignInResultStatus.ok,
@@ -228,10 +228,10 @@ class GitHubSignIn {
 
   /// Uses the access token to fetch the authenticated user's data from the GitHub API.
   Future<Map<String, dynamic>?> _fetchUserDataFromGitHub(String accessToken) async {
-    const String userApiUrl = 'https://api.github.com/user';
-    const String emailsApiUrl = 'https://api.github.com/user/emails';
+    const userApiUrl = 'https://api.github.com/user';
+    const emailsApiUrl = 'https://api.github.com/user/emails';
 
-    final Map<String, String> headers = {
+    final headers = <String, String>{
       'Authorization': 'Bearer $accessToken',
       'Accept': 'application/json',
     };
