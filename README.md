@@ -90,7 +90,7 @@ Add the following to your `android/app/src/main/AndroidManifest.xml`:
 
 ```dart
 import 'package:flutter/material.dart'
-import 'package:github_oauth_signin/github_sign_in.dart';
+import 'package:github_oauth_signin/github_oauth_signin.dart';
 
 class MyApp extends StatelessWidget {
   @override
