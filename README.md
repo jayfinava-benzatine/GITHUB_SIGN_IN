@@ -25,7 +25,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  github_oauth_signin: ^1.0.0
+  github_oauth_signin: ^1.0.1
 ```
 
 Then run:

@@ -5,7 +5,9 @@ void main() {
   runApp(const MyApp());
 }
 
+/// The main application widget for the GitHub OAuth signin example.
 class MyApp extends StatelessWidget {
+  /// Creates the main application widget.
   const MyApp({super.key});
 
   // This widget is the root of your application.
@@ -19,9 +21,14 @@ class MyApp extends StatelessWidget {
       );
 }
 
+/// The home page widget that demonstrates GitHub OAuth signin functionality.
 class MyHomePage extends StatefulWidget {
+  /// Creates the home page widget.
+  /// 
+  /// The [title] parameter is displayed in the app bar.
   const MyHomePage({required this.title, super.key});
 
+  /// The title to display in the app bar.
   final String title;
 
   @override

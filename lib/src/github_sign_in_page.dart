@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+/// A Flutter widget that displays a GitHub OAuth sign-in page using WebView.
+/// 
+/// This widget handles the OAuth flow by loading the GitHub authorization URL
+/// and capturing the redirect callback to extract the authorization code.
 class GitHubSignInPage extends StatefulWidget {
+  /// Creates a new GitHub sign-in page.
+  /// 
+  /// The [url] parameter is the GitHub OAuth authorization URL.
+  /// The [redirectUrl] parameter is the callback URL configured in your GitHub OAuth app.
+  /// The [clearCache] parameter determines whether to clear browser cache (defaults to true).
+  /// The [title] parameter sets the page title.
+  /// The [centerTitle] parameter determines whether to center the title.
+  /// The [userAgent] parameter allows setting a custom user agent string.
+  /// The [appBar] parameter allows providing a custom AppBar.
   const GitHubSignInPage(
       {required this.url,
       required this.redirectUrl,
@@ -12,12 +25,25 @@ class GitHubSignInPage extends StatefulWidget {
       this.centerTitle,
       this.appBar});
 
+  /// The GitHub OAuth authorization URL to load.
   final String url;
+  
+  /// The redirect URL configured in your GitHub OAuth app.
   final String redirectUrl;
+  
+  /// Whether to clear the browser cache before loading the page.
   final bool clearCache;
+  
+  /// The title to display in the app bar.
   final String title;
+  
+  /// Whether to center the title in the app bar.
   final bool? centerTitle;
+  
+  /// Custom user agent string for the WebView.
   final String? userAgent;
+  
+  /// Custom AppBar to use instead of the default one.
   final AppBar? appBar;
 
   @override
